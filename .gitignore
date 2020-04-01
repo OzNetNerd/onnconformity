@@ -1,0 +1,7 @@
+dist/
+onnconformity.egg-info/
+__pycache__/
+venv/
+.idea/
+log.txt
+aws_conformity_accounts.csv

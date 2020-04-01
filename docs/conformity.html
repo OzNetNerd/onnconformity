@@ -1,0 +1,1046 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.7.5" />
+<title>onnconformity.conformity API documentation</title>
+<meta name="description" content="" />
+<link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
+<link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
+<style>.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{font-weight:bold}#index h4 + ul{margin-bottom:.6em}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>onnconformity.conformity</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">import os
+import sys
+import requests
+import json
+from pprint import pformat
+
+
+CC_REGIONS = [
+    &#39;eu-west-1&#39;,
+    &#39;ap-southeast-2&#39;,
+    &#39;us-west-2&#39;,
+]
+
+
+class Conformity:
+    def __init__(self, logger):
+        &#34;&#34;&#34;Description:
+            Convenience Python module for Cloud One Conformity
+
+        Args:
+            logger (onnlogger.Loggers): An instance of `onnlogger.Loggers`
+
+        Example:
+            Example usage:
+
+                from onnlogger import Loggers
+
+                logger = Loggers(logger_name=&#39;Conformity&#39;, console_logger=True, log_level=&#39;INFO&#39;, log_file_path=&#39;/tmp/log&#39;)
+                conformity = Conformity(logger)
+        &#34;&#34;&#34;
+        self.logger = logger
+
+        try:
+            self.logger.entry(&#39;info&#39;, &#39;Obtaining required environment variables...&#39;)
+            self.cc_region = os.environ[&#39;CC_REGION&#39;].lower()
+
+            if self.cc_region not in CC_REGIONS:
+                sys.exit(&#39;Error: Please ensure &#34;CC_REGION&#34; is set to a region which is supported by Cloud Conformity&#39;)
+
+            self.api_key = os.environ[&#39;CC_API_KEY&#39;]
+
+        except KeyError:
+            sys.exit(&#39;Error: Please ensure all environment variables are set&#39;)
+
+        self.headers = {
+            &#39;Content-Type&#39;: &#39;application/vnd.api+json&#39;,
+            &#39;Authorization&#39;: &#39;ApiKey &#39; + self.api_key
+        }
+
+        self.org_id = self._get_org_id()
+
+    def delete_subscription(self, conformity_id) -&gt; dict:
+        &#34;&#34;&#34;Delete a Conformity subscription
+
+        Args:
+            conformity_id (str): Subscription ID
+
+        Example:
+            Example usage:
+
+                deleted_subscription = conformity.delete_subscription(&#39;57KARHFRW&#39;)
+                print(deleted_subscription)
+                {&#39;meta&#39;: {&#39;status&#39;: &#39;sent&#39;}}
+
+        Returns:
+            dict
+
+        &#34;&#34;&#34;
+        self.logger.entry(&#39;info&#39;, f&#39;Deleting subscription ID {conformity_id}...&#39;)
+        account_endpoint = f&#39;https://{self.cc_region}-api.cloudconformity.com/v1/accounts/{conformity_id}&#39;
+        resp = requests.delete(account_endpoint, headers=self.headers)
+        resp_json = json.loads(resp.text)
+        self._check_error(resp_json)
+
+        self.logger.entry(&#39;debug&#39;, &#39;Done&#39;)
+        return resp_json
+
+    def list_subscriptions(self) -&gt; dict:
+        &#34;&#34;&#34;List Conformity subscriptions
+
+        Args:
+            conformity_id (str): Subscription ID
+
+        Example:
+            Example usage:
+
+                from pprint import pprint
+                subscriptions = conformity.list_subscriptions()
+                pprint(subscriptions)
+                {&#39;data&#39;: [{&#39;attributes&#39;: {&#39;access&#39;: None,
+                          &#39;awsaccount-id&#39;: &#39;123456789012&#39;,
+                          &#39;cloud-type&#39;: &#39;aws&#39;,
+                          &#39;cost-package&#39;: True,
+                          &#39;created-date&#39;: 1585526686560,
+                          &#39;environment&#39;: None,
+                          &#39;has-real-time-monitoring&#39;: True,
+                          &#39;last-checked-date&#39;: 1585711290751,
+                          &#39;last-monitoring-event-date&#39;: None,
+                          &#39;last-notified-date&#39;: 1585711291075,
+                          &#39;name&#39;: &#39;Demo&#39;,
+                          &#39;security-package&#39;: True,
+                          &#39;tags&#39;: None},
+                &#39;id&#39;: &#39;dg4Sfsw23&#39;,
+                &#39;relationships&#39;: {&#39;organisation&#39;: {&#39;data&#39;: {&#39;id&#39;: &#39;dsaer28hw&#39;,
+                                                            &#39;type&#39;: &#39;organisations&#39;}}},
+                &#39;type&#39;: &#39;accounts&#39;}]}
+
+        Returns:
+            dict
+        &#34;&#34;&#34;
+
+        self.logger.entry(&#39;info&#39;, &#39;Getting list of Conformity subscriptions...&#39;)
+        account_endpoint = f&#39;https://{self.cc_region}-api.cloudconformity.com/v1/accounts/&#39;
+
+        resp = requests.get(account_endpoint, headers=self.headers)
+        resp_json = json.loads(resp.text)
+        self._check_error(resp_json)
+
+        self.logger.entry(&#39;info&#39;, f&#39;Found subscriptions:\n{pformat(resp_json)}&#39;)
+
+        return resp_json
+
+    @staticmethod
+    def _check_error(json_payload) -&gt; None:
+        error_message = json_payload.get(&#39;Message&#39;) or json_payload.get(&#39;errors&#39;)
+
+        if error_message:
+            sys.exit(f&#39;Error: {error_message}&#39;)
+
+    def _get_org_id(self) -&gt; str:
+        &#34;&#34;&#34;Gets the Conformity ID
+
+        Example:
+            Example usage:
+
+            org_id = conformity._get_org_id()
+            print(org_id)
+            g34242f5y-2345-345g-234d-gi473bdlfng7
+
+        Returns:
+            str
+        &#34;&#34;&#34;
+        self.logger.entry(&#39;info&#39;, &#39;Getting Conformity Organization ID...&#39;)
+        org_endpoint = f&#39;https://{self.cc_region}-api.cloudconformity.com/v1/organisation/external-id/&#39;
+        resp = requests.get(org_endpoint, headers=self.headers)
+        resp_json = json.loads(resp.text)
+        self._check_error(resp_json)
+
+        org_id = resp_json[&#39;data&#39;][&#39;id&#39;]
+        self.logger.entry(&#39;debug&#39;, {org_id})
+
+        return org_id
+
+    def check_subscription_exists(self, aws_account_id) -&gt; dict:
+        &#34;&#34;&#34;Checks if a Conformity subscription exists for an AWS account
+
+        Note: `list_subscriptions()` is called  every time as CC does not prevent users from creating multiple
+        subscriptions for the same account/ARN
+
+        Args:
+            aws_account_id (str): AWS account ID
+
+        Example:
+            Example usage:
+
+                from pprint import pprint
+
+                existing_account = conformity.check_subscription_exists(&#39;098765432109&#39;)
+                pprint(existing_account)
+                {&#39;attributes&#39;: {&#39;access&#39;: None,
+                             &#39;awsaccount-id&#39;: &#39;098765432109&#39;,
+                             &#39;cloud-type&#39;: &#39;aws&#39;,
+                             &#39;cost-package&#39;: False,
+                             &#39;created-date&#39;: 1585780981170,
+                             &#39;environment&#39;: &#39;&#39;,
+                             &#39;has-real-time-monitoring&#39;: False,
+                             &#39;name&#39;: &#39;Lab1&#39;,
+                             &#39;security-package&#39;: True,
+                             &#39;settings&#39;: {&#39;rules&#39;: []},
+                             &#39;status&#39;: &#39;ACTIVE&#39;,
+                             &#39;tags&#39;: None},
+                &#39;id&#39;: &#39;462FSFGGR&#39;,
+                &#39;relationships&#39;: {&#39;organisation&#39;: {&#39;data&#39;: {&#39;id&#39;: &#39;sdes23216&#39;,
+                                                            &#39;type&#39;: &#39;organisations&#39;}}},
+                &#39;type&#39;: &#39;accounts&#39;}}
+
+        Returns:
+            dict
+        &#34;&#34;&#34;
+        self.logger.entry(&#39;info&#39;, f&#39;Checking if AWS account ID {aws_account_id} already has a Conformity &#39;
+                                  f&#39;subscription...&#39;)
+
+        list_of_subscriptions = self.list_subscriptions()
+
+        for entry in list_of_subscriptions[&#39;data&#39;]:
+            aws_id = entry[&#39;attributes&#39;].get(&#39;awsaccount-id&#39;)
+
+            if not aws_id:
+                continue
+
+            if aws_id == aws_account_id:
+                self.logger.entry(&#39;debug&#39;, f&#39;It does exist:\n{pformat(entry)}&#39;)
+
+                return entry
+
+            self.logger.entry(&#39;debug&#39;, f&#39;AWS account ID {aws_account_id} does not have a Conformity subscription&#39;)
+
+            return dict()
+
+    def create_subscription(self, aws_account_id, role_arn, account_name, account_env=&#39;&#39;, cost_package=False,
+                            rtm=False) -&gt; dict:
+        &#34;&#34;&#34;Description:
+            Create a Conformity subscription for an AWS account
+
+        Note: `list_subscriptions()` is called  every time as CC does not prevent users from creating multiple
+        subscriptions for the same account/ARN
+
+        Args:
+            aws_account_id (str): AWS account ID
+            role_arn (str): AWS role ARN
+            account_name (str): Conformity account name
+            account_env (str): Conformity account environment name
+            cost_package (bool): Enable cost package
+            rtm (bool): Enable RTM package
+
+        Example:
+            Example usage:
+
+                new_subscription = conformity.create_subscription(&#39;098765432109&#39;, &#39;arn:aws:iam::098765432109:role/CloudConformity&#39;, &#39;Lab1&#39;)
+                pprint(new_subscription)
+                {&#39;data&#39;: {&#39;attributes&#39;: {&#39;access&#39;: None,
+                         &#39;awsaccount-id&#39;: &#39;098765432109&#39;,
+                         &#39;cloud-type&#39;: &#39;aws&#39;,
+                         &#39;cost-package&#39;: False,
+                         &#39;created-date&#39;: 1585780981170,
+                         &#39;environment&#39;: &#39;&#39;,
+                         &#39;has-real-time-monitoring&#39;: False,
+                         &#39;name&#39;: &#39;Lab1&#39;,
+                         &#39;security-package&#39;: True,
+                         &#39;settings&#39;: {&#39;rules&#39;: []},
+                         &#39;status&#39;: &#39;ACTIVE&#39;,
+                         &#39;tags&#39;: None},
+                &#39;id&#39;: &#39;462FSFGGR&#39;,
+                &#39;relationships&#39;: {&#39;organisation&#39;: {&#39;data&#39;: {&#39;id&#39;: &#39;sdefgw3r6&#39;,
+                                                            &#39;type&#39;: &#39;organisations&#39;}}},
+                &#39;type&#39;: &#39;accounts&#39;}}
+
+        Returns:
+            dict
+        &#34;&#34;&#34;
+        subscription_exists = self.check_subscription_exists(aws_account_id)
+
+        if subscription_exists:
+            self.logger.entry(&#39;debug&#39;, f&#39;Skipping subscription creation for for AWS account ID {aws_account_id} as it &#39;
+                                       f&#39;is not required&#39;)
+
+        self.logger.entry(&#39;info&#39;, f&#39;Creating Conformity subscription for AWS account ID {aws_account_id}...&#39;)
+
+        account_endpoint = f&#39;https://{self.cc_region}-api.cloudconformity.com/v1/accounts/&#39;
+
+        cost_package = cost_package.upper() if cost_package else False
+        rtm = rtm.upper() if rtm else False
+
+        data = {
+            &#39;data&#39;: {
+                &#39;type&#39;: &#39;accounts&#39;,
+                &#39;attributes&#39;: {
+                    &#39;name&#39;: account_name,
+                    &#39;environment&#39;: account_env,
+                    &#39;access&#39;: {
+                        &#39;keys&#39;: {
+                            &#39;roleArn&#39;: role_arn,
+                            &#39;externalId&#39;: self.org_id,
+                        }
+                    },
+                    &#39;costPackage&#39;: cost_package,
+                    &#39;hasRealTimeMonitoring&#39;: rtm,
+                }
+            }
+        }
+
+        data = json.dumps(data)
+
+        resp = requests.post(account_endpoint, headers=self.headers, data=data)
+        resp_json = json.loads(resp.text)
+        self._check_error(resp_json)
+
+        self.logger.entry(&#39;debug&#39;, f&#39;Done:\n{pformat(resp_json)}&#39;)
+        return resp_json</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="onnconformity.conformity.Conformity"><code class="flex name class">
+<span>class <span class="ident">Conformity</span></span>
+<span>(</span><span>logger)</span>
+</code></dt>
+<dd>
+<section class="desc"><h2 id="description">Description</h2>
+<p>Convenience Python module for Cloud One Conformity</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>logger</code></strong> :&ensp;<code>onnlogger.Loggers</code></dt>
+<dd>An instance of <code>onnlogger.Loggers</code></dd>
+</dl>
+<h2 id="example">Example</h2>
+<p>Example usage:</p>
+<pre><code>from onnlogger import Loggers
+
+logger = Loggers(logger_name='Conformity', console_logger=True, log_level='INFO', log_file_path='/tmp/log')
+conformity = Conformity(logger)
+</code></pre></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Conformity:
+    def __init__(self, logger):
+        &#34;&#34;&#34;Description:
+            Convenience Python module for Cloud One Conformity
+
+        Args:
+            logger (onnlogger.Loggers): An instance of `onnlogger.Loggers`
+
+        Example:
+            Example usage:
+
+                from onnlogger import Loggers
+
+                logger = Loggers(logger_name=&#39;Conformity&#39;, console_logger=True, log_level=&#39;INFO&#39;, log_file_path=&#39;/tmp/log&#39;)
+                conformity = Conformity(logger)
+        &#34;&#34;&#34;
+        self.logger = logger
+
+        try:
+            self.logger.entry(&#39;info&#39;, &#39;Obtaining required environment variables...&#39;)
+            self.cc_region = os.environ[&#39;CC_REGION&#39;].lower()
+
+            if self.cc_region not in CC_REGIONS:
+                sys.exit(&#39;Error: Please ensure &#34;CC_REGION&#34; is set to a region which is supported by Cloud Conformity&#39;)
+
+            self.api_key = os.environ[&#39;CC_API_KEY&#39;]
+
+        except KeyError:
+            sys.exit(&#39;Error: Please ensure all environment variables are set&#39;)
+
+        self.headers = {
+            &#39;Content-Type&#39;: &#39;application/vnd.api+json&#39;,
+            &#39;Authorization&#39;: &#39;ApiKey &#39; + self.api_key
+        }
+
+        self.org_id = self._get_org_id()
+
+    def delete_subscription(self, conformity_id) -&gt; dict:
+        &#34;&#34;&#34;Delete a Conformity subscription
+
+        Args:
+            conformity_id (str): Subscription ID
+
+        Example:
+            Example usage:
+
+                deleted_subscription = conformity.delete_subscription(&#39;57KARHFRW&#39;)
+                print(deleted_subscription)
+                {&#39;meta&#39;: {&#39;status&#39;: &#39;sent&#39;}}
+
+        Returns:
+            dict
+
+        &#34;&#34;&#34;
+        self.logger.entry(&#39;info&#39;, f&#39;Deleting subscription ID {conformity_id}...&#39;)
+        account_endpoint = f&#39;https://{self.cc_region}-api.cloudconformity.com/v1/accounts/{conformity_id}&#39;
+        resp = requests.delete(account_endpoint, headers=self.headers)
+        resp_json = json.loads(resp.text)
+        self._check_error(resp_json)
+
+        self.logger.entry(&#39;debug&#39;, &#39;Done&#39;)
+        return resp_json
+
+    def list_subscriptions(self) -&gt; dict:
+        &#34;&#34;&#34;List Conformity subscriptions
+
+        Args:
+            conformity_id (str): Subscription ID
+
+        Example:
+            Example usage:
+
+                from pprint import pprint
+                subscriptions = conformity.list_subscriptions()
+                pprint(subscriptions)
+                {&#39;data&#39;: [{&#39;attributes&#39;: {&#39;access&#39;: None,
+                          &#39;awsaccount-id&#39;: &#39;123456789012&#39;,
+                          &#39;cloud-type&#39;: &#39;aws&#39;,
+                          &#39;cost-package&#39;: True,
+                          &#39;created-date&#39;: 1585526686560,
+                          &#39;environment&#39;: None,
+                          &#39;has-real-time-monitoring&#39;: True,
+                          &#39;last-checked-date&#39;: 1585711290751,
+                          &#39;last-monitoring-event-date&#39;: None,
+                          &#39;last-notified-date&#39;: 1585711291075,
+                          &#39;name&#39;: &#39;Demo&#39;,
+                          &#39;security-package&#39;: True,
+                          &#39;tags&#39;: None},
+                &#39;id&#39;: &#39;dg4Sfsw23&#39;,
+                &#39;relationships&#39;: {&#39;organisation&#39;: {&#39;data&#39;: {&#39;id&#39;: &#39;dsaer28hw&#39;,
+                                                            &#39;type&#39;: &#39;organisations&#39;}}},
+                &#39;type&#39;: &#39;accounts&#39;}]}
+
+        Returns:
+            dict
+        &#34;&#34;&#34;
+
+        self.logger.entry(&#39;info&#39;, &#39;Getting list of Conformity subscriptions...&#39;)
+        account_endpoint = f&#39;https://{self.cc_region}-api.cloudconformity.com/v1/accounts/&#39;
+
+        resp = requests.get(account_endpoint, headers=self.headers)
+        resp_json = json.loads(resp.text)
+        self._check_error(resp_json)
+
+        self.logger.entry(&#39;info&#39;, f&#39;Found subscriptions:\n{pformat(resp_json)}&#39;)
+
+        return resp_json
+
+    @staticmethod
+    def _check_error(json_payload) -&gt; None:
+        error_message = json_payload.get(&#39;Message&#39;) or json_payload.get(&#39;errors&#39;)
+
+        if error_message:
+            sys.exit(f&#39;Error: {error_message}&#39;)
+
+    def _get_org_id(self) -&gt; str:
+        &#34;&#34;&#34;Gets the Conformity ID
+
+        Example:
+            Example usage:
+
+            org_id = conformity._get_org_id()
+            print(org_id)
+            g34242f5y-2345-345g-234d-gi473bdlfng7
+
+        Returns:
+            str
+        &#34;&#34;&#34;
+        self.logger.entry(&#39;info&#39;, &#39;Getting Conformity Organization ID...&#39;)
+        org_endpoint = f&#39;https://{self.cc_region}-api.cloudconformity.com/v1/organisation/external-id/&#39;
+        resp = requests.get(org_endpoint, headers=self.headers)
+        resp_json = json.loads(resp.text)
+        self._check_error(resp_json)
+
+        org_id = resp_json[&#39;data&#39;][&#39;id&#39;]
+        self.logger.entry(&#39;debug&#39;, {org_id})
+
+        return org_id
+
+    def check_subscription_exists(self, aws_account_id) -&gt; dict:
+        &#34;&#34;&#34;Checks if a Conformity subscription exists for an AWS account
+
+        Note: `list_subscriptions()` is called  every time as CC does not prevent users from creating multiple
+        subscriptions for the same account/ARN
+
+        Args:
+            aws_account_id (str): AWS account ID
+
+        Example:
+            Example usage:
+
+                from pprint import pprint
+
+                existing_account = conformity.check_subscription_exists(&#39;098765432109&#39;)
+                pprint(existing_account)
+                {&#39;attributes&#39;: {&#39;access&#39;: None,
+                             &#39;awsaccount-id&#39;: &#39;098765432109&#39;,
+                             &#39;cloud-type&#39;: &#39;aws&#39;,
+                             &#39;cost-package&#39;: False,
+                             &#39;created-date&#39;: 1585780981170,
+                             &#39;environment&#39;: &#39;&#39;,
+                             &#39;has-real-time-monitoring&#39;: False,
+                             &#39;name&#39;: &#39;Lab1&#39;,
+                             &#39;security-package&#39;: True,
+                             &#39;settings&#39;: {&#39;rules&#39;: []},
+                             &#39;status&#39;: &#39;ACTIVE&#39;,
+                             &#39;tags&#39;: None},
+                &#39;id&#39;: &#39;462FSFGGR&#39;,
+                &#39;relationships&#39;: {&#39;organisation&#39;: {&#39;data&#39;: {&#39;id&#39;: &#39;sdes23216&#39;,
+                                                            &#39;type&#39;: &#39;organisations&#39;}}},
+                &#39;type&#39;: &#39;accounts&#39;}}
+
+        Returns:
+            dict
+        &#34;&#34;&#34;
+        self.logger.entry(&#39;info&#39;, f&#39;Checking if AWS account ID {aws_account_id} already has a Conformity &#39;
+                                  f&#39;subscription...&#39;)
+
+        list_of_subscriptions = self.list_subscriptions()
+
+        for entry in list_of_subscriptions[&#39;data&#39;]:
+            aws_id = entry[&#39;attributes&#39;].get(&#39;awsaccount-id&#39;)
+
+            if not aws_id:
+                continue
+
+            if aws_id == aws_account_id:
+                self.logger.entry(&#39;debug&#39;, f&#39;It does exist:\n{pformat(entry)}&#39;)
+
+                return entry
+
+            self.logger.entry(&#39;debug&#39;, f&#39;AWS account ID {aws_account_id} does not have a Conformity subscription&#39;)
+
+            return dict()
+
+    def create_subscription(self, aws_account_id, role_arn, account_name, account_env=&#39;&#39;, cost_package=False,
+                            rtm=False) -&gt; dict:
+        &#34;&#34;&#34;Description:
+            Create a Conformity subscription for an AWS account
+
+        Note: `list_subscriptions()` is called  every time as CC does not prevent users from creating multiple
+        subscriptions for the same account/ARN
+
+        Args:
+            aws_account_id (str): AWS account ID
+            role_arn (str): AWS role ARN
+            account_name (str): Conformity account name
+            account_env (str): Conformity account environment name
+            cost_package (bool): Enable cost package
+            rtm (bool): Enable RTM package
+
+        Example:
+            Example usage:
+
+                new_subscription = conformity.create_subscription(&#39;098765432109&#39;, &#39;arn:aws:iam::098765432109:role/CloudConformity&#39;, &#39;Lab1&#39;)
+                pprint(new_subscription)
+                {&#39;data&#39;: {&#39;attributes&#39;: {&#39;access&#39;: None,
+                         &#39;awsaccount-id&#39;: &#39;098765432109&#39;,
+                         &#39;cloud-type&#39;: &#39;aws&#39;,
+                         &#39;cost-package&#39;: False,
+                         &#39;created-date&#39;: 1585780981170,
+                         &#39;environment&#39;: &#39;&#39;,
+                         &#39;has-real-time-monitoring&#39;: False,
+                         &#39;name&#39;: &#39;Lab1&#39;,
+                         &#39;security-package&#39;: True,
+                         &#39;settings&#39;: {&#39;rules&#39;: []},
+                         &#39;status&#39;: &#39;ACTIVE&#39;,
+                         &#39;tags&#39;: None},
+                &#39;id&#39;: &#39;462FSFGGR&#39;,
+                &#39;relationships&#39;: {&#39;organisation&#39;: {&#39;data&#39;: {&#39;id&#39;: &#39;sdefgw3r6&#39;,
+                                                            &#39;type&#39;: &#39;organisations&#39;}}},
+                &#39;type&#39;: &#39;accounts&#39;}}
+
+        Returns:
+            dict
+        &#34;&#34;&#34;
+        subscription_exists = self.check_subscription_exists(aws_account_id)
+
+        if subscription_exists:
+            self.logger.entry(&#39;debug&#39;, f&#39;Skipping subscription creation for for AWS account ID {aws_account_id} as it &#39;
+                                       f&#39;is not required&#39;)
+
+        self.logger.entry(&#39;info&#39;, f&#39;Creating Conformity subscription for AWS account ID {aws_account_id}...&#39;)
+
+        account_endpoint = f&#39;https://{self.cc_region}-api.cloudconformity.com/v1/accounts/&#39;
+
+        cost_package = cost_package.upper() if cost_package else False
+        rtm = rtm.upper() if rtm else False
+
+        data = {
+            &#39;data&#39;: {
+                &#39;type&#39;: &#39;accounts&#39;,
+                &#39;attributes&#39;: {
+                    &#39;name&#39;: account_name,
+                    &#39;environment&#39;: account_env,
+                    &#39;access&#39;: {
+                        &#39;keys&#39;: {
+                            &#39;roleArn&#39;: role_arn,
+                            &#39;externalId&#39;: self.org_id,
+                        }
+                    },
+                    &#39;costPackage&#39;: cost_package,
+                    &#39;hasRealTimeMonitoring&#39;: rtm,
+                }
+            }
+        }
+
+        data = json.dumps(data)
+
+        resp = requests.post(account_endpoint, headers=self.headers, data=data)
+        resp_json = json.loads(resp.text)
+        self._check_error(resp_json)
+
+        self.logger.entry(&#39;debug&#39;, f&#39;Done:\n{pformat(resp_json)}&#39;)
+        return resp_json</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="onnconformity.conformity.Conformity.check_subscription_exists"><code class="name flex">
+<span>def <span class="ident">check_subscription_exists</span></span>(<span>self, aws_account_id)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Checks if a Conformity subscription exists for an AWS account</p>
+<p>Note: <code>list_subscriptions()</code> is called
+every time as CC does not prevent users from creating multiple
+subscriptions for the same account/ARN</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>aws_account_id</code></strong> :&ensp;<code>str</code></dt>
+<dd>AWS account ID</dd>
+</dl>
+<h2 id="example">Example</h2>
+<p>Example usage:</p>
+<pre><code>from pprint import pprint
+
+existing_account = conformity.check_subscription_exists('098765432109')
+pprint(existing_account)
+{'attributes': {'access': None,
+             'awsaccount-id': '098765432109',
+             'cloud-type': 'aws',
+             'cost-package': False,
+             'created-date': 1585780981170,
+             'environment': '',
+             'has-real-time-monitoring': False,
+             'name': 'Lab1',
+             'security-package': True,
+             'settings': {'rules': []},
+             'status': 'ACTIVE',
+             'tags': None},
+'id': '462FSFGGR',
+'relationships': {'organisation': {'data': {'id': 'sdes23216',
+                                            'type': 'organisations'}}},
+'type': 'accounts'}}
+</code></pre>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>dict</code></dt>
+<dd>&nbsp;</dd>
+</dl></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def check_subscription_exists(self, aws_account_id) -&gt; dict:
+    &#34;&#34;&#34;Checks if a Conformity subscription exists for an AWS account
+
+    Note: `list_subscriptions()` is called  every time as CC does not prevent users from creating multiple
+    subscriptions for the same account/ARN
+
+    Args:
+        aws_account_id (str): AWS account ID
+
+    Example:
+        Example usage:
+
+            from pprint import pprint
+
+            existing_account = conformity.check_subscription_exists(&#39;098765432109&#39;)
+            pprint(existing_account)
+            {&#39;attributes&#39;: {&#39;access&#39;: None,
+                         &#39;awsaccount-id&#39;: &#39;098765432109&#39;,
+                         &#39;cloud-type&#39;: &#39;aws&#39;,
+                         &#39;cost-package&#39;: False,
+                         &#39;created-date&#39;: 1585780981170,
+                         &#39;environment&#39;: &#39;&#39;,
+                         &#39;has-real-time-monitoring&#39;: False,
+                         &#39;name&#39;: &#39;Lab1&#39;,
+                         &#39;security-package&#39;: True,
+                         &#39;settings&#39;: {&#39;rules&#39;: []},
+                         &#39;status&#39;: &#39;ACTIVE&#39;,
+                         &#39;tags&#39;: None},
+            &#39;id&#39;: &#39;462FSFGGR&#39;,
+            &#39;relationships&#39;: {&#39;organisation&#39;: {&#39;data&#39;: {&#39;id&#39;: &#39;sdes23216&#39;,
+                                                        &#39;type&#39;: &#39;organisations&#39;}}},
+            &#39;type&#39;: &#39;accounts&#39;}}
+
+    Returns:
+        dict
+    &#34;&#34;&#34;
+    self.logger.entry(&#39;info&#39;, f&#39;Checking if AWS account ID {aws_account_id} already has a Conformity &#39;
+                              f&#39;subscription...&#39;)
+
+    list_of_subscriptions = self.list_subscriptions()
+
+    for entry in list_of_subscriptions[&#39;data&#39;]:
+        aws_id = entry[&#39;attributes&#39;].get(&#39;awsaccount-id&#39;)
+
+        if not aws_id:
+            continue
+
+        if aws_id == aws_account_id:
+            self.logger.entry(&#39;debug&#39;, f&#39;It does exist:\n{pformat(entry)}&#39;)
+
+            return entry
+
+        self.logger.entry(&#39;debug&#39;, f&#39;AWS account ID {aws_account_id} does not have a Conformity subscription&#39;)
+
+        return dict()</code></pre>
+</details>
+</dd>
+<dt id="onnconformity.conformity.Conformity.create_subscription"><code class="name flex">
+<span>def <span class="ident">create_subscription</span></span>(<span>self, aws_account_id, role_arn, account_name, account_env='', cost_package=False, rtm=False)</span>
+</code></dt>
+<dd>
+<section class="desc"><h2 id="description">Description</h2>
+<dl>
+<dt>Create a Conformity subscription for an AWS account</dt>
+<dt><strong><code>Note</code></strong> :&ensp;<code>`list_subscriptions</code>()<code></code>is<code></code>called<code></code>every<code></code>time<code></code>as<code></code>CC<code></code>does<code></code>not<code></code>prevent<code></code>users<code></code>from<code></code>creating<code></code>multiple`</dt>
+<dd>&nbsp;</dd>
+</dl>
+<p>subscriptions for the same account/ARN</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>aws_account_id</code></strong> :&ensp;<code>str</code></dt>
+<dd>AWS account ID</dd>
+<dt><strong><code>role_arn</code></strong> :&ensp;<code>str</code></dt>
+<dd>AWS role ARN</dd>
+<dt><strong><code>account_name</code></strong> :&ensp;<code>str</code></dt>
+<dd>Conformity account name</dd>
+<dt><strong><code>account_env</code></strong> :&ensp;<code>str</code></dt>
+<dd>Conformity account environment name</dd>
+<dt><strong><code>cost_package</code></strong> :&ensp;<code>bool</code></dt>
+<dd>Enable cost package</dd>
+<dt><strong><code>rtm</code></strong> :&ensp;<code>bool</code></dt>
+<dd>Enable RTM package</dd>
+</dl>
+<h2 id="example">Example</h2>
+<p>Example usage:</p>
+<pre><code>new_subscription = conformity.create_subscription('098765432109', 'arn:aws:iam::098765432109:role/CloudConformity', 'Lab1')
+pprint(new_subscription)
+{'data': {'attributes': {'access': None,
+         'awsaccount-id': '098765432109',
+         'cloud-type': 'aws',
+         'cost-package': False,
+         'created-date': 1585780981170,
+         'environment': '',
+         'has-real-time-monitoring': False,
+         'name': 'Lab1',
+         'security-package': True,
+         'settings': {'rules': []},
+         'status': 'ACTIVE',
+         'tags': None},
+'id': '462FSFGGR',
+'relationships': {'organisation': {'data': {'id': 'sdefgw3r6',
+                                            'type': 'organisations'}}},
+'type': 'accounts'}}
+</code></pre>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>dict</code></dt>
+<dd>&nbsp;</dd>
+</dl></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def create_subscription(self, aws_account_id, role_arn, account_name, account_env=&#39;&#39;, cost_package=False,
+                        rtm=False) -&gt; dict:
+    &#34;&#34;&#34;Description:
+        Create a Conformity subscription for an AWS account
+
+    Note: `list_subscriptions()` is called  every time as CC does not prevent users from creating multiple
+    subscriptions for the same account/ARN
+
+    Args:
+        aws_account_id (str): AWS account ID
+        role_arn (str): AWS role ARN
+        account_name (str): Conformity account name
+        account_env (str): Conformity account environment name
+        cost_package (bool): Enable cost package
+        rtm (bool): Enable RTM package
+
+    Example:
+        Example usage:
+
+            new_subscription = conformity.create_subscription(&#39;098765432109&#39;, &#39;arn:aws:iam::098765432109:role/CloudConformity&#39;, &#39;Lab1&#39;)
+            pprint(new_subscription)
+            {&#39;data&#39;: {&#39;attributes&#39;: {&#39;access&#39;: None,
+                     &#39;awsaccount-id&#39;: &#39;098765432109&#39;,
+                     &#39;cloud-type&#39;: &#39;aws&#39;,
+                     &#39;cost-package&#39;: False,
+                     &#39;created-date&#39;: 1585780981170,
+                     &#39;environment&#39;: &#39;&#39;,
+                     &#39;has-real-time-monitoring&#39;: False,
+                     &#39;name&#39;: &#39;Lab1&#39;,
+                     &#39;security-package&#39;: True,
+                     &#39;settings&#39;: {&#39;rules&#39;: []},
+                     &#39;status&#39;: &#39;ACTIVE&#39;,
+                     &#39;tags&#39;: None},
+            &#39;id&#39;: &#39;462FSFGGR&#39;,
+            &#39;relationships&#39;: {&#39;organisation&#39;: {&#39;data&#39;: {&#39;id&#39;: &#39;sdefgw3r6&#39;,
+                                                        &#39;type&#39;: &#39;organisations&#39;}}},
+            &#39;type&#39;: &#39;accounts&#39;}}
+
+    Returns:
+        dict
+    &#34;&#34;&#34;
+    subscription_exists = self.check_subscription_exists(aws_account_id)
+
+    if subscription_exists:
+        self.logger.entry(&#39;debug&#39;, f&#39;Skipping subscription creation for for AWS account ID {aws_account_id} as it &#39;
+                                   f&#39;is not required&#39;)
+
+    self.logger.entry(&#39;info&#39;, f&#39;Creating Conformity subscription for AWS account ID {aws_account_id}...&#39;)
+
+    account_endpoint = f&#39;https://{self.cc_region}-api.cloudconformity.com/v1/accounts/&#39;
+
+    cost_package = cost_package.upper() if cost_package else False
+    rtm = rtm.upper() if rtm else False
+
+    data = {
+        &#39;data&#39;: {
+            &#39;type&#39;: &#39;accounts&#39;,
+            &#39;attributes&#39;: {
+                &#39;name&#39;: account_name,
+                &#39;environment&#39;: account_env,
+                &#39;access&#39;: {
+                    &#39;keys&#39;: {
+                        &#39;roleArn&#39;: role_arn,
+                        &#39;externalId&#39;: self.org_id,
+                    }
+                },
+                &#39;costPackage&#39;: cost_package,
+                &#39;hasRealTimeMonitoring&#39;: rtm,
+            }
+        }
+    }
+
+    data = json.dumps(data)
+
+    resp = requests.post(account_endpoint, headers=self.headers, data=data)
+    resp_json = json.loads(resp.text)
+    self._check_error(resp_json)
+
+    self.logger.entry(&#39;debug&#39;, f&#39;Done:\n{pformat(resp_json)}&#39;)
+    return resp_json</code></pre>
+</details>
+</dd>
+<dt id="onnconformity.conformity.Conformity.delete_subscription"><code class="name flex">
+<span>def <span class="ident">delete_subscription</span></span>(<span>self, conformity_id)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Delete a Conformity subscription</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>conformity_id</code></strong> :&ensp;<code>str</code></dt>
+<dd>Subscription ID</dd>
+</dl>
+<h2 id="example">Example</h2>
+<p>Example usage:</p>
+<pre><code>deleted_subscription = conformity.delete_subscription('57KARHFRW')
+print(deleted_subscription)
+{'meta': {'status': 'sent'}}
+</code></pre>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>dict</code></dt>
+<dd>&nbsp;</dd>
+</dl></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def delete_subscription(self, conformity_id) -&gt; dict:
+    &#34;&#34;&#34;Delete a Conformity subscription
+
+    Args:
+        conformity_id (str): Subscription ID
+
+    Example:
+        Example usage:
+
+            deleted_subscription = conformity.delete_subscription(&#39;57KARHFRW&#39;)
+            print(deleted_subscription)
+            {&#39;meta&#39;: {&#39;status&#39;: &#39;sent&#39;}}
+
+    Returns:
+        dict
+
+    &#34;&#34;&#34;
+    self.logger.entry(&#39;info&#39;, f&#39;Deleting subscription ID {conformity_id}...&#39;)
+    account_endpoint = f&#39;https://{self.cc_region}-api.cloudconformity.com/v1/accounts/{conformity_id}&#39;
+    resp = requests.delete(account_endpoint, headers=self.headers)
+    resp_json = json.loads(resp.text)
+    self._check_error(resp_json)
+
+    self.logger.entry(&#39;debug&#39;, &#39;Done&#39;)
+    return resp_json</code></pre>
+</details>
+</dd>
+<dt id="onnconformity.conformity.Conformity.list_subscriptions"><code class="name flex">
+<span>def <span class="ident">list_subscriptions</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>List Conformity subscriptions</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>conformity_id</code></strong> :&ensp;<code>str</code></dt>
+<dd>Subscription ID</dd>
+</dl>
+<h2 id="example">Example</h2>
+<p>Example usage:</p>
+<pre><code>from pprint import pprint
+subscriptions = conformity.list_subscriptions()
+pprint(subscriptions)
+{'data': [{'attributes': {'access': None,
+          'awsaccount-id': '123456789012',
+          'cloud-type': 'aws',
+          'cost-package': True,
+          'created-date': 1585526686560,
+          'environment': None,
+          'has-real-time-monitoring': True,
+          'last-checked-date': 1585711290751,
+          'last-monitoring-event-date': None,
+          'last-notified-date': 1585711291075,
+          'name': 'Demo',
+          'security-package': True,
+          'tags': None},
+'id': 'dg4Sfsw23',
+'relationships': {'organisation': {'data': {'id': 'dsaer28hw',
+                                            'type': 'organisations'}}},
+'type': 'accounts'}]}
+</code></pre>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>dict</code></dt>
+<dd>&nbsp;</dd>
+</dl></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def list_subscriptions(self) -&gt; dict:
+    &#34;&#34;&#34;List Conformity subscriptions
+
+    Args:
+        conformity_id (str): Subscription ID
+
+    Example:
+        Example usage:
+
+            from pprint import pprint
+            subscriptions = conformity.list_subscriptions()
+            pprint(subscriptions)
+            {&#39;data&#39;: [{&#39;attributes&#39;: {&#39;access&#39;: None,
+                      &#39;awsaccount-id&#39;: &#39;123456789012&#39;,
+                      &#39;cloud-type&#39;: &#39;aws&#39;,
+                      &#39;cost-package&#39;: True,
+                      &#39;created-date&#39;: 1585526686560,
+                      &#39;environment&#39;: None,
+                      &#39;has-real-time-monitoring&#39;: True,
+                      &#39;last-checked-date&#39;: 1585711290751,
+                      &#39;last-monitoring-event-date&#39;: None,
+                      &#39;last-notified-date&#39;: 1585711291075,
+                      &#39;name&#39;: &#39;Demo&#39;,
+                      &#39;security-package&#39;: True,
+                      &#39;tags&#39;: None},
+            &#39;id&#39;: &#39;dg4Sfsw23&#39;,
+            &#39;relationships&#39;: {&#39;organisation&#39;: {&#39;data&#39;: {&#39;id&#39;: &#39;dsaer28hw&#39;,
+                                                        &#39;type&#39;: &#39;organisations&#39;}}},
+            &#39;type&#39;: &#39;accounts&#39;}]}
+
+    Returns:
+        dict
+    &#34;&#34;&#34;
+
+    self.logger.entry(&#39;info&#39;, &#39;Getting list of Conformity subscriptions...&#39;)
+    account_endpoint = f&#39;https://{self.cc_region}-api.cloudconformity.com/v1/accounts/&#39;
+
+    resp = requests.get(account_endpoint, headers=self.headers)
+    resp_json = json.loads(resp.text)
+    self._check_error(resp_json)
+
+    self.logger.entry(&#39;info&#39;, f&#39;Found subscriptions:\n{pformat(resp_json)}&#39;)
+
+    return resp_json</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="onnconformity" href="index.html">onnconformity</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="onnconformity.conformity.Conformity" href="#onnconformity.conformity.Conformity">Conformity</a></code></h4>
+<ul class="">
+<li><code><a title="onnconformity.conformity.Conformity.check_subscription_exists" href="#onnconformity.conformity.Conformity.check_subscription_exists">check_subscription_exists</a></code></li>
+<li><code><a title="onnconformity.conformity.Conformity.create_subscription" href="#onnconformity.conformity.Conformity.create_subscription">create_subscription</a></code></li>
+<li><code><a title="onnconformity.conformity.Conformity.delete_subscription" href="#onnconformity.conformity.Conformity.delete_subscription">delete_subscription</a></code></li>
+<li><code><a title="onnconformity.conformity.Conformity.list_subscriptions" href="#onnconformity.conformity.Conformity.list_subscriptions">list_subscriptions</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.7.5</a>.</p>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+</body>
+</html>
