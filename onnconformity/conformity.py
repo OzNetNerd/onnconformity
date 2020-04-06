@@ -4,7 +4,7 @@ import requests
 import json
 from pprint import pformat
 
-
+CONFORMITY_ACCOUNT_ID = '717210094962'
 CC_REGIONS = [
     'eu-west-1',
     'ap-southeast-2',
@@ -50,7 +50,8 @@ class Conformity:
         self.org_id = self._get_org_id()
 
     def delete_subscription(self, conformity_id) -> dict:
-        """Delete a Conformity subscription
+        """Description:
+            Delete a Conformity subscription
 
         Args:
             conformity_id (str): Subscription ID
@@ -76,7 +77,8 @@ class Conformity:
         return resp_json
 
     def list_subscriptions(self) -> dict:
-        """List Conformity subscriptions
+        """Description:
+            List Conformity subscriptions
 
         Args:
             conformity_id (str): Subscription ID
@@ -128,7 +130,8 @@ class Conformity:
             sys.exit(f'Error: {error_message}')
 
     def _get_org_id(self) -> str:
-        """Gets the Conformity ID
+        """Description:
+            Gets the Conformity ID
 
         Example:
             Example usage:
@@ -152,10 +155,11 @@ class Conformity:
         return org_id
 
     def check_subscription_exists(self, aws_account_id) -> dict:
-        """Checks if a Conformity subscription exists for an AWS account
+        """Description:
+            Checks if a Conformity subscription exists for an AWS account
 
-        Note: `list_subscriptions()` is called  every time as CC does not prevent users from creating multiple
-        subscriptions for the same account/ARN
+            Note - `list_subscriptions()` is called  every time as CC does not prevent users from creating multiple
+            subscriptions for the same account/ARN
 
         Args:
             aws_account_id (str): AWS account ID
@@ -212,12 +216,12 @@ class Conformity:
         """Description:
             Create a Conformity subscription for an AWS account
 
-        Note: `list_subscriptions()` is called  every time as CC does not prevent users from creating multiple
-        subscriptions for the same account/ARN
+            Note - `list_subscriptions()` is called  every time as CC does not prevent users from creating multiple
+            subscriptions for the same account/ARN
 
         Args:
             aws_account_id (str): AWS account ID
-            role_arn (str): AWS role ARN
+            role_arn (str): Role ARN for Conformity's access
             account_name (str): Conformity account name
             account_env (str): Conformity account environment name
             cost_package (bool): Enable cost package
@@ -280,6 +284,7 @@ class Conformity:
         }
 
         data = json.dumps(data)
+        self.logger.entry('debug', f'Sending payload:\n{pformat(data)}')
 
         resp = requests.post(account_endpoint, headers=self.headers, data=data)
         resp_json = json.loads(resp.text)
@@ -287,4 +292,3 @@ class Conformity:
 
         self.logger.entry('debug', f'Done:\n{pformat(resp_json)}')
         return resp_json
-
