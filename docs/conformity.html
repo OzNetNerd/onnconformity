@@ -30,6 +30,7 @@ import requests
 import json
 from pprint import pformat
 
+API_VERION = &#39;v1&#39;
 CONFORMITY_ACCOUNT_ID = &#39;717210094962&#39;
 CC_REGIONS = [
     &#39;eu-west-1&#39;,
@@ -73,6 +74,7 @@ class Conformity:
             &#39;Authorization&#39;: &#39;ApiKey &#39; + self.api_key
         }
 
+        self.base_url = f&#39;https://{self.cc_region}-api.cloudconformity.com/{API_VERION}&#39;
         self.org_id = self._get_org_id()
 
     def delete_subscription(self, conformity_id) -&gt; dict:
@@ -94,7 +96,7 @@ class Conformity:
 
         &#34;&#34;&#34;
         self.logger.entry(&#39;info&#39;, f&#39;Deleting subscription ID {conformity_id}...&#39;)
-        account_endpoint = f&#39;https://{self.cc_region}-api.cloudconformity.com/v1/accounts/{conformity_id}&#39;
+        account_endpoint = f&#39;/accounts/{conformity_id}&#39;
         resp = requests.delete(account_endpoint, headers=self.headers)
         resp_json = json.loads(resp.text)
         self._check_error(resp_json)
@@ -138,7 +140,7 @@ class Conformity:
         &#34;&#34;&#34;
 
         self.logger.entry(&#39;info&#39;, &#39;Getting list of Conformity subscriptions...&#39;)
-        account_endpoint = f&#39;https://{self.cc_region}-api.cloudconformity.com/v1/accounts/&#39;
+        account_endpoint = f&#39;{self.base_url}/accounts/&#39;
 
         resp = requests.get(account_endpoint, headers=self.headers)
         resp_json = json.loads(resp.text)
@@ -170,7 +172,7 @@ class Conformity:
             str
         &#34;&#34;&#34;
         self.logger.entry(&#39;info&#39;, &#39;Getting Conformity Organization ID...&#39;)
-        org_endpoint = f&#39;https://{self.cc_region}-api.cloudconformity.com/v1/organisation/external-id/&#39;
+        org_endpoint = f&#39;{self.base_url}/organisation/external-id/&#39;
         resp = requests.get(org_endpoint, headers=self.headers)
         resp_json = json.loads(resp.text)
         self._check_error(resp_json)
@@ -237,6 +239,89 @@ class Conformity:
 
             return dict()
 
+    def list_users(self):
+        &#34;&#34;&#34;Description:
+            Lists Conformity users
+
+        Example:
+            Example usage:
+
+                users = conformity.list_users()
+                pprint(users)
+                {&#39;data&#39;: [{&#39;attributes&#39;: {&#39;created-date&#39;: 1586387549366,
+                                          &#39;email&#39;: &#39;demo@example.com&#39;,
+                                          &#39;first-name&#39;: &#39;Jane&#39;,
+                                          &#39;has-credentials&#39;: True,
+                                          &#39;last-login-date&#39;: 1586400827844,
+                                          &#39;last-name&#39;: &#39;Doe&#39;,
+                                          &#39;role&#39;: &#39;USER&#39;,
+                                          &#39;status&#39;: &#39;ACTIVE&#39;},
+                           &#39;id&#39;: &#39;6s5fg23sf&#39;,
+                           &#39;relationships&#39;: {&#39;organisation&#39;: {&#39;data&#39;: {&#39;id&#39;: &#39;d3g63dgs1&#39;,
+                                                                       &#39;type&#39;: &#39;organisations&#39;}}},
+                           &#39;type&#39;: &#39;users&#39;}]}
+
+        Returns:
+            dict
+        &#34;&#34;&#34;
+        self.logger.entry(&#39;info&#39;, &#39;Getting list of Conformity users...&#39;)
+        users_endpoint = f&#39;{self.base_url}/users/&#39;
+
+        resp = requests.get(users_endpoint, headers=self.headers)
+        resp_json = json.loads(resp.text)
+        self._check_error(resp_json)
+
+        return resp_json
+
+    def update_user(self, user_id,  account_id, user_role=&#39;USER&#39;, access_level=&#39;READONLY&#39;) -&gt; dict:
+        &#34;&#34;&#34;Description:
+            Lists Conformity users
+
+        Args:
+            user_id: Conformity user ID
+            account_id: Conformity account ID
+            user_role: User role
+            access_level: User access level
+
+        Example:
+            Example usage:
+
+        Returns:
+
+        &#34;&#34;&#34;
+        self.logger.entry(&#39;info&#39;, f&#39;Updating Conformity account ID {account_id}...&#39;)
+        users_endpoint = f&#39;{self.base_url}/users/{user_id}&#39;
+
+        user_role = user_role.upper()
+        data = {
+            &#39;data&#39;: {
+                &#39;role&#39;: user_role
+            }
+        }
+
+        if user_role == &#39;USER&#39;:
+            access_level = access_level.upper()
+            access_list = {
+                &#39;accessList&#39;: [
+                    {
+                        &#39;account&#39;: account_id,
+                        &#39;level&#39;: access_level,
+                    }
+                ]
+            }
+
+            data[&#39;data&#39;].update(access_list)
+
+        data = json.dumps(data)
+        self.logger.entry(&#39;debug&#39;, f&#39;Sending payload:\n{pformat(data)}&#39;)
+
+        resp = requests.patch(users_endpoint, headers=self.headers, data=data)
+        resp_json = json.loads(resp.text)
+        self._check_error(resp_json)
+
+        self.logger.entry(&#39;debug&#39;, f&#39;Done:\n{pformat(resp_json)}&#39;)
+        return resp_json
+
     def create_subscription(self, aws_account_id, role_arn, account_name, account_env=&#39;&#39;, cost_package=False,
                             rtm=False) -&gt; dict:
         &#34;&#34;&#34;Description:
@@ -286,7 +371,7 @@ class Conformity:
 
         self.logger.entry(&#39;info&#39;, f&#39;Creating Conformity subscription for AWS account ID {aws_account_id}...&#39;)
 
-        account_endpoint = f&#39;https://{self.cc_region}-api.cloudconformity.com/v1/accounts/&#39;
+        account_endpoint = f&#39;{self.base_url}/accounts/&#39;
 
         cost_package = cost_package.upper() if cost_package else False
         rtm = rtm.upper() if rtm else False
@@ -387,6 +472,7 @@ conformity = Conformity(logger)
             &#39;Authorization&#39;: &#39;ApiKey &#39; + self.api_key
         }
 
+        self.base_url = f&#39;https://{self.cc_region}-api.cloudconformity.com/{API_VERION}&#39;
         self.org_id = self._get_org_id()
 
     def delete_subscription(self, conformity_id) -&gt; dict:
@@ -408,7 +494,7 @@ conformity = Conformity(logger)
 
         &#34;&#34;&#34;
         self.logger.entry(&#39;info&#39;, f&#39;Deleting subscription ID {conformity_id}...&#39;)
-        account_endpoint = f&#39;https://{self.cc_region}-api.cloudconformity.com/v1/accounts/{conformity_id}&#39;
+        account_endpoint = f&#39;/accounts/{conformity_id}&#39;
         resp = requests.delete(account_endpoint, headers=self.headers)
         resp_json = json.loads(resp.text)
         self._check_error(resp_json)
@@ -452,7 +538,7 @@ conformity = Conformity(logger)
         &#34;&#34;&#34;
 
         self.logger.entry(&#39;info&#39;, &#39;Getting list of Conformity subscriptions...&#39;)
-        account_endpoint = f&#39;https://{self.cc_region}-api.cloudconformity.com/v1/accounts/&#39;
+        account_endpoint = f&#39;{self.base_url}/accounts/&#39;
 
         resp = requests.get(account_endpoint, headers=self.headers)
         resp_json = json.loads(resp.text)
@@ -484,7 +570,7 @@ conformity = Conformity(logger)
             str
         &#34;&#34;&#34;
         self.logger.entry(&#39;info&#39;, &#39;Getting Conformity Organization ID...&#39;)
-        org_endpoint = f&#39;https://{self.cc_region}-api.cloudconformity.com/v1/organisation/external-id/&#39;
+        org_endpoint = f&#39;{self.base_url}/organisation/external-id/&#39;
         resp = requests.get(org_endpoint, headers=self.headers)
         resp_json = json.loads(resp.text)
         self._check_error(resp_json)
@@ -551,6 +637,89 @@ conformity = Conformity(logger)
 
             return dict()
 
+    def list_users(self):
+        &#34;&#34;&#34;Description:
+            Lists Conformity users
+
+        Example:
+            Example usage:
+
+                users = conformity.list_users()
+                pprint(users)
+                {&#39;data&#39;: [{&#39;attributes&#39;: {&#39;created-date&#39;: 1586387549366,
+                                          &#39;email&#39;: &#39;demo@example.com&#39;,
+                                          &#39;first-name&#39;: &#39;Jane&#39;,
+                                          &#39;has-credentials&#39;: True,
+                                          &#39;last-login-date&#39;: 1586400827844,
+                                          &#39;last-name&#39;: &#39;Doe&#39;,
+                                          &#39;role&#39;: &#39;USER&#39;,
+                                          &#39;status&#39;: &#39;ACTIVE&#39;},
+                           &#39;id&#39;: &#39;6s5fg23sf&#39;,
+                           &#39;relationships&#39;: {&#39;organisation&#39;: {&#39;data&#39;: {&#39;id&#39;: &#39;d3g63dgs1&#39;,
+                                                                       &#39;type&#39;: &#39;organisations&#39;}}},
+                           &#39;type&#39;: &#39;users&#39;}]}
+
+        Returns:
+            dict
+        &#34;&#34;&#34;
+        self.logger.entry(&#39;info&#39;, &#39;Getting list of Conformity users...&#39;)
+        users_endpoint = f&#39;{self.base_url}/users/&#39;
+
+        resp = requests.get(users_endpoint, headers=self.headers)
+        resp_json = json.loads(resp.text)
+        self._check_error(resp_json)
+
+        return resp_json
+
+    def update_user(self, user_id,  account_id, user_role=&#39;USER&#39;, access_level=&#39;READONLY&#39;) -&gt; dict:
+        &#34;&#34;&#34;Description:
+            Lists Conformity users
+
+        Args:
+            user_id: Conformity user ID
+            account_id: Conformity account ID
+            user_role: User role
+            access_level: User access level
+
+        Example:
+            Example usage:
+
+        Returns:
+
+        &#34;&#34;&#34;
+        self.logger.entry(&#39;info&#39;, f&#39;Updating Conformity account ID {account_id}...&#39;)
+        users_endpoint = f&#39;{self.base_url}/users/{user_id}&#39;
+
+        user_role = user_role.upper()
+        data = {
+            &#39;data&#39;: {
+                &#39;role&#39;: user_role
+            }
+        }
+
+        if user_role == &#39;USER&#39;:
+            access_level = access_level.upper()
+            access_list = {
+                &#39;accessList&#39;: [
+                    {
+                        &#39;account&#39;: account_id,
+                        &#39;level&#39;: access_level,
+                    }
+                ]
+            }
+
+            data[&#39;data&#39;].update(access_list)
+
+        data = json.dumps(data)
+        self.logger.entry(&#39;debug&#39;, f&#39;Sending payload:\n{pformat(data)}&#39;)
+
+        resp = requests.patch(users_endpoint, headers=self.headers, data=data)
+        resp_json = json.loads(resp.text)
+        self._check_error(resp_json)
+
+        self.logger.entry(&#39;debug&#39;, f&#39;Done:\n{pformat(resp_json)}&#39;)
+        return resp_json
+
     def create_subscription(self, aws_account_id, role_arn, account_name, account_env=&#39;&#39;, cost_package=False,
                             rtm=False) -&gt; dict:
         &#34;&#34;&#34;Description:
@@ -600,7 +769,7 @@ conformity = Conformity(logger)
 
         self.logger.entry(&#39;info&#39;, f&#39;Creating Conformity subscription for AWS account ID {aws_account_id}...&#39;)
 
-        account_endpoint = f&#39;https://{self.cc_region}-api.cloudconformity.com/v1/accounts/&#39;
+        account_endpoint = f&#39;{self.base_url}/accounts/&#39;
 
         cost_package = cost_package.upper() if cost_package else False
         rtm = rtm.upper() if rtm else False
@@ -842,7 +1011,7 @@ pprint(new_subscription)
 
     self.logger.entry(&#39;info&#39;, f&#39;Creating Conformity subscription for AWS account ID {aws_account_id}...&#39;)
 
-    account_endpoint = f&#39;https://{self.cc_region}-api.cloudconformity.com/v1/accounts/&#39;
+    account_endpoint = f&#39;{self.base_url}/accounts/&#39;
 
     cost_package = cost_package.upper() if cost_package else False
     rtm = rtm.upper() if rtm else False
@@ -921,7 +1090,7 @@ print(deleted_subscription)
 
     &#34;&#34;&#34;
     self.logger.entry(&#39;info&#39;, f&#39;Deleting subscription ID {conformity_id}...&#39;)
-    account_endpoint = f&#39;https://{self.cc_region}-api.cloudconformity.com/v1/accounts/{conformity_id}&#39;
+    account_endpoint = f&#39;/accounts/{conformity_id}&#39;
     resp = requests.delete(account_endpoint, headers=self.headers)
     resp_json = json.loads(resp.text)
     self._check_error(resp_json)
@@ -1009,7 +1178,7 @@ pprint(subscriptions)
     &#34;&#34;&#34;
 
     self.logger.entry(&#39;info&#39;, &#39;Getting list of Conformity subscriptions...&#39;)
-    account_endpoint = f&#39;https://{self.cc_region}-api.cloudconformity.com/v1/accounts/&#39;
+    account_endpoint = f&#39;{self.base_url}/accounts/&#39;
 
     resp = requests.get(account_endpoint, headers=self.headers)
     resp_json = json.loads(resp.text)
@@ -1017,6 +1186,147 @@ pprint(subscriptions)
 
     self.logger.entry(&#39;info&#39;, f&#39;Found subscriptions:\n{pformat(resp_json)}&#39;)
 
+    return resp_json</code></pre>
+</details>
+</dd>
+<dt id="onnconformity.conformity.Conformity.list_users"><code class="name flex">
+<span>def <span class="ident">list_users</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<section class="desc"><h2 id="description">Description</h2>
+<p>Lists Conformity users</p>
+<h2 id="example">Example</h2>
+<p>Example usage:</p>
+<pre><code>users = conformity.list_users()
+pprint(users)
+{'data': [{'attributes': {'created-date': 1586387549366,
+                          'email': 'demo@example.com',
+                          'first-name': 'Jane',
+                          'has-credentials': True,
+                          'last-login-date': 1586400827844,
+                          'last-name': 'Doe',
+                          'role': 'USER',
+                          'status': 'ACTIVE'},
+           'id': '6s5fg23sf',
+           'relationships': {'organisation': {'data': {'id': 'd3g63dgs1',
+                                                       'type': 'organisations'}}},
+           'type': 'users'}]}
+</code></pre>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>dict</code></dt>
+<dd>&nbsp;</dd>
+</dl></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def list_users(self):
+    &#34;&#34;&#34;Description:
+        Lists Conformity users
+
+    Example:
+        Example usage:
+
+            users = conformity.list_users()
+            pprint(users)
+            {&#39;data&#39;: [{&#39;attributes&#39;: {&#39;created-date&#39;: 1586387549366,
+                                      &#39;email&#39;: &#39;demo@example.com&#39;,
+                                      &#39;first-name&#39;: &#39;Jane&#39;,
+                                      &#39;has-credentials&#39;: True,
+                                      &#39;last-login-date&#39;: 1586400827844,
+                                      &#39;last-name&#39;: &#39;Doe&#39;,
+                                      &#39;role&#39;: &#39;USER&#39;,
+                                      &#39;status&#39;: &#39;ACTIVE&#39;},
+                       &#39;id&#39;: &#39;6s5fg23sf&#39;,
+                       &#39;relationships&#39;: {&#39;organisation&#39;: {&#39;data&#39;: {&#39;id&#39;: &#39;d3g63dgs1&#39;,
+                                                                   &#39;type&#39;: &#39;organisations&#39;}}},
+                       &#39;type&#39;: &#39;users&#39;}]}
+
+    Returns:
+        dict
+    &#34;&#34;&#34;
+    self.logger.entry(&#39;info&#39;, &#39;Getting list of Conformity users...&#39;)
+    users_endpoint = f&#39;{self.base_url}/users/&#39;
+
+    resp = requests.get(users_endpoint, headers=self.headers)
+    resp_json = json.loads(resp.text)
+    self._check_error(resp_json)
+
+    return resp_json</code></pre>
+</details>
+</dd>
+<dt id="onnconformity.conformity.Conformity.update_user"><code class="name flex">
+<span>def <span class="ident">update_user</span></span>(<span>self, user_id, account_id, user_role='USER', access_level='READONLY')</span>
+</code></dt>
+<dd>
+<section class="desc"><h2 id="description">Description</h2>
+<p>Lists Conformity users</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>user_id</code></strong></dt>
+<dd>Conformity user ID</dd>
+<dt><strong><code>account_id</code></strong></dt>
+<dd>Conformity account ID</dd>
+<dt><strong><code>user_role</code></strong></dt>
+<dd>User role</dd>
+<dt><strong><code>access_level</code></strong></dt>
+<dd>User access level</dd>
+</dl>
+<h2 id="example">Example</h2>
+<p>Example usage:
+Returns:</p></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def update_user(self, user_id,  account_id, user_role=&#39;USER&#39;, access_level=&#39;READONLY&#39;) -&gt; dict:
+    &#34;&#34;&#34;Description:
+        Lists Conformity users
+
+    Args:
+        user_id: Conformity user ID
+        account_id: Conformity account ID
+        user_role: User role
+        access_level: User access level
+
+    Example:
+        Example usage:
+
+    Returns:
+
+    &#34;&#34;&#34;
+    self.logger.entry(&#39;info&#39;, f&#39;Updating Conformity account ID {account_id}...&#39;)
+    users_endpoint = f&#39;{self.base_url}/users/{user_id}&#39;
+
+    user_role = user_role.upper()
+    data = {
+        &#39;data&#39;: {
+            &#39;role&#39;: user_role
+        }
+    }
+
+    if user_role == &#39;USER&#39;:
+        access_level = access_level.upper()
+        access_list = {
+            &#39;accessList&#39;: [
+                {
+                    &#39;account&#39;: account_id,
+                    &#39;level&#39;: access_level,
+                }
+            ]
+        }
+
+        data[&#39;data&#39;].update(access_list)
+
+    data = json.dumps(data)
+    self.logger.entry(&#39;debug&#39;, f&#39;Sending payload:\n{pformat(data)}&#39;)
+
+    resp = requests.patch(users_endpoint, headers=self.headers, data=data)
+    resp_json = json.loads(resp.text)
+    self._check_error(resp_json)
+
+    self.logger.entry(&#39;debug&#39;, f&#39;Done:\n{pformat(resp_json)}&#39;)
     return resp_json</code></pre>
 </details>
 </dd>
@@ -1045,6 +1355,8 @@ pprint(subscriptions)
 <li><code><a title="onnconformity.conformity.Conformity.create_subscription" href="#onnconformity.conformity.Conformity.create_subscription">create_subscription</a></code></li>
 <li><code><a title="onnconformity.conformity.Conformity.delete_subscription" href="#onnconformity.conformity.Conformity.delete_subscription">delete_subscription</a></code></li>
 <li><code><a title="onnconformity.conformity.Conformity.list_subscriptions" href="#onnconformity.conformity.Conformity.list_subscriptions">list_subscriptions</a></code></li>
+<li><code><a title="onnconformity.conformity.Conformity.list_users" href="#onnconformity.conformity.Conformity.list_users">list_users</a></code></li>
+<li><code><a title="onnconformity.conformity.Conformity.update_user" href="#onnconformity.conformity.Conformity.update_user">update_user</a></code></li>
 </ul>
 </li>
 </ul>
