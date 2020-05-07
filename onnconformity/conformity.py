@@ -377,3 +377,52 @@ class Conformity:
 
         self.logger.entry('debug', f'Done:\n{pformat(resp_json)}')
         return resp_json
+
+    def invite_user(self, first_name,  last_name, email, account_id, access_level='READONLY') -> dict:
+        """Description:
+            Lists Conformity users
+
+        Args:
+            user_id: Conformity user ID
+            account_id: Conformity account ID
+            user_role: User role
+            access_level: User access level
+
+        Example:
+            Example usage:
+
+        Returns:
+
+        """
+        self.logger.entry('info', f'Updating Conformity account ID {account_id}...')
+        users_endpoint = f'{self.base_url}/users/{user_id}'
+
+        user_role = user_role.upper()
+        data = {
+            'data': {
+                'role': user_role
+            }
+        }
+
+        if user_role == 'USER':
+            access_level = access_level.upper()
+            access_list = {
+                'accessList': [
+                    {
+                        'account': account_id,
+                        'level': access_level,
+                    }
+                ]
+            }
+
+            data['data'].update(access_list)
+
+        data = json.dumps(data)
+        self.logger.entry('debug', f'Sending payload:\n{pformat(data)}')
+
+        resp = requests.patch(users_endpoint, headers=self.headers, data=data)
+        resp_json = json.loads(resp.text)
+        self._check_error(resp_json)
+
+        self.logger.entry('debug', f'Done:\n{pformat(resp_json)}')
+        return resp_json
