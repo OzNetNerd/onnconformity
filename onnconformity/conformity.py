@@ -120,7 +120,7 @@ class Conformity:
         resp_json = json.loads(resp.text)
         self._check_error(resp_json)
 
-        self.logger.entry('info', f'Found subscriptions:\n{pformat(resp_json)}')
+        self.logger.entry('debug', f'Found subscriptions:\n{pformat(resp_json)}')
 
         return resp_json
 

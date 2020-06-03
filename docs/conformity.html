@@ -146,7 +146,7 @@ class Conformity:
         resp_json = json.loads(resp.text)
         self._check_error(resp_json)
 
-        self.logger.entry(&#39;info&#39;, f&#39;Found subscriptions:\n{pformat(resp_json)}&#39;)
+        self.logger.entry(&#39;debug&#39;, f&#39;Found subscriptions:\n{pformat(resp_json)}&#39;)
 
         return resp_json
 
@@ -398,6 +398,55 @@ class Conformity:
         self.logger.entry(&#39;debug&#39;, f&#39;Sending payload:\n{pformat(data)}&#39;)
 
         resp = requests.post(account_endpoint, headers=self.headers, data=data)
+        resp_json = json.loads(resp.text)
+        self._check_error(resp_json)
+
+        self.logger.entry(&#39;debug&#39;, f&#39;Done:\n{pformat(resp_json)}&#39;)
+        return resp_json
+
+    def invite_user(self, first_name,  last_name, email, account_id, access_level=&#39;READONLY&#39;) -&gt; dict:
+        &#34;&#34;&#34;Description:
+            Lists Conformity users
+
+        Args:
+            user_id: Conformity user ID
+            account_id: Conformity account ID
+            user_role: User role
+            access_level: User access level
+
+        Example:
+            Example usage:
+
+        Returns:
+
+        &#34;&#34;&#34;
+        self.logger.entry(&#39;info&#39;, f&#39;Updating Conformity account ID {account_id}...&#39;)
+        users_endpoint = f&#39;{self.base_url}/users/{user_id}&#39;
+
+        user_role = user_role.upper()
+        data = {
+            &#39;data&#39;: {
+                &#39;role&#39;: user_role
+            }
+        }
+
+        if user_role == &#39;USER&#39;:
+            access_level = access_level.upper()
+            access_list = {
+                &#39;accessList&#39;: [
+                    {
+                        &#39;account&#39;: account_id,
+                        &#39;level&#39;: access_level,
+                    }
+                ]
+            }
+
+            data[&#39;data&#39;].update(access_list)
+
+        data = json.dumps(data)
+        self.logger.entry(&#39;debug&#39;, f&#39;Sending payload:\n{pformat(data)}&#39;)
+
+        resp = requests.patch(users_endpoint, headers=self.headers, data=data)
         resp_json = json.loads(resp.text)
         self._check_error(resp_json)
 
@@ -544,7 +593,7 @@ conformity = Conformity(logger)
         resp_json = json.loads(resp.text)
         self._check_error(resp_json)
 
-        self.logger.entry(&#39;info&#39;, f&#39;Found subscriptions:\n{pformat(resp_json)}&#39;)
+        self.logger.entry(&#39;debug&#39;, f&#39;Found subscriptions:\n{pformat(resp_json)}&#39;)
 
         return resp_json
 
@@ -796,6 +845,55 @@ conformity = Conformity(logger)
         self.logger.entry(&#39;debug&#39;, f&#39;Sending payload:\n{pformat(data)}&#39;)
 
         resp = requests.post(account_endpoint, headers=self.headers, data=data)
+        resp_json = json.loads(resp.text)
+        self._check_error(resp_json)
+
+        self.logger.entry(&#39;debug&#39;, f&#39;Done:\n{pformat(resp_json)}&#39;)
+        return resp_json
+
+    def invite_user(self, first_name,  last_name, email, account_id, access_level=&#39;READONLY&#39;) -&gt; dict:
+        &#34;&#34;&#34;Description:
+            Lists Conformity users
+
+        Args:
+            user_id: Conformity user ID
+            account_id: Conformity account ID
+            user_role: User role
+            access_level: User access level
+
+        Example:
+            Example usage:
+
+        Returns:
+
+        &#34;&#34;&#34;
+        self.logger.entry(&#39;info&#39;, f&#39;Updating Conformity account ID {account_id}...&#39;)
+        users_endpoint = f&#39;{self.base_url}/users/{user_id}&#39;
+
+        user_role = user_role.upper()
+        data = {
+            &#39;data&#39;: {
+                &#39;role&#39;: user_role
+            }
+        }
+
+        if user_role == &#39;USER&#39;:
+            access_level = access_level.upper()
+            access_list = {
+                &#39;accessList&#39;: [
+                    {
+                        &#39;account&#39;: account_id,
+                        &#39;level&#39;: access_level,
+                    }
+                ]
+            }
+
+            data[&#39;data&#39;].update(access_list)
+
+        data = json.dumps(data)
+        self.logger.entry(&#39;debug&#39;, f&#39;Sending payload:\n{pformat(data)}&#39;)
+
+        resp = requests.patch(users_endpoint, headers=self.headers, data=data)
         resp_json = json.loads(resp.text)
         self._check_error(resp_json)
 
@@ -1099,6 +1197,80 @@ print(deleted_subscription)
     return resp_json</code></pre>
 </details>
 </dd>
+<dt id="onnconformity.conformity.Conformity.invite_user"><code class="name flex">
+<span>def <span class="ident">invite_user</span></span>(<span>self, first_name, last_name, email, account_id, access_level='READONLY')</span>
+</code></dt>
+<dd>
+<section class="desc"><h2 id="description">Description</h2>
+<p>Lists Conformity users</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>user_id</code></strong></dt>
+<dd>Conformity user ID</dd>
+<dt><strong><code>account_id</code></strong></dt>
+<dd>Conformity account ID</dd>
+<dt><strong><code>user_role</code></strong></dt>
+<dd>User role</dd>
+<dt><strong><code>access_level</code></strong></dt>
+<dd>User access level</dd>
+</dl>
+<h2 id="example">Example</h2>
+<p>Example usage:
+Returns:</p></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def invite_user(self, first_name,  last_name, email, account_id, access_level=&#39;READONLY&#39;) -&gt; dict:
+    &#34;&#34;&#34;Description:
+        Lists Conformity users
+
+    Args:
+        user_id: Conformity user ID
+        account_id: Conformity account ID
+        user_role: User role
+        access_level: User access level
+
+    Example:
+        Example usage:
+
+    Returns:
+
+    &#34;&#34;&#34;
+    self.logger.entry(&#39;info&#39;, f&#39;Updating Conformity account ID {account_id}...&#39;)
+    users_endpoint = f&#39;{self.base_url}/users/{user_id}&#39;
+
+    user_role = user_role.upper()
+    data = {
+        &#39;data&#39;: {
+            &#39;role&#39;: user_role
+        }
+    }
+
+    if user_role == &#39;USER&#39;:
+        access_level = access_level.upper()
+        access_list = {
+            &#39;accessList&#39;: [
+                {
+                    &#39;account&#39;: account_id,
+                    &#39;level&#39;: access_level,
+                }
+            ]
+        }
+
+        data[&#39;data&#39;].update(access_list)
+
+    data = json.dumps(data)
+    self.logger.entry(&#39;debug&#39;, f&#39;Sending payload:\n{pformat(data)}&#39;)
+
+    resp = requests.patch(users_endpoint, headers=self.headers, data=data)
+    resp_json = json.loads(resp.text)
+    self._check_error(resp_json)
+
+    self.logger.entry(&#39;debug&#39;, f&#39;Done:\n{pformat(resp_json)}&#39;)
+    return resp_json</code></pre>
+</details>
+</dd>
 <dt id="onnconformity.conformity.Conformity.list_subscriptions"><code class="name flex">
 <span>def <span class="ident">list_subscriptions</span></span>(<span>self)</span>
 </code></dt>
@@ -1184,7 +1356,7 @@ pprint(subscriptions)
     resp_json = json.loads(resp.text)
     self._check_error(resp_json)
 
-    self.logger.entry(&#39;info&#39;, f&#39;Found subscriptions:\n{pformat(resp_json)}&#39;)
+    self.logger.entry(&#39;debug&#39;, f&#39;Found subscriptions:\n{pformat(resp_json)}&#39;)
 
     return resp_json</code></pre>
 </details>
@@ -1354,6 +1526,7 @@ Returns:</p></section>
 <li><code><a title="onnconformity.conformity.Conformity.check_subscription_exists" href="#onnconformity.conformity.Conformity.check_subscription_exists">check_subscription_exists</a></code></li>
 <li><code><a title="onnconformity.conformity.Conformity.create_subscription" href="#onnconformity.conformity.Conformity.create_subscription">create_subscription</a></code></li>
 <li><code><a title="onnconformity.conformity.Conformity.delete_subscription" href="#onnconformity.conformity.Conformity.delete_subscription">delete_subscription</a></code></li>
+<li><code><a title="onnconformity.conformity.Conformity.invite_user" href="#onnconformity.conformity.Conformity.invite_user">invite_user</a></code></li>
 <li><code><a title="onnconformity.conformity.Conformity.list_subscriptions" href="#onnconformity.conformity.Conformity.list_subscriptions">list_subscriptions</a></code></li>
 <li><code><a title="onnconformity.conformity.Conformity.list_users" href="#onnconformity.conformity.Conformity.list_users">list_users</a></code></li>
 <li><code><a title="onnconformity.conformity.Conformity.update_user" href="#onnconformity.conformity.Conformity.update_user">update_user</a></code></li>
