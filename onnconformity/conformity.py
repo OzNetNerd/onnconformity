@@ -343,6 +343,8 @@ class Conformity:
             self.logger.entry('debug', f'Skipping subscription creation for for AWS account ID {aws_account_id} as it '
                                        f'is not required')
 
+            return subscription_exists
+
         self.logger.entry('info', f'Creating Conformity subscription for AWS account ID {aws_account_id}...')
 
         account_endpoint = f'{self.base_url}/accounts/'
