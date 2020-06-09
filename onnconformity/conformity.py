@@ -113,7 +113,7 @@ class Conformity:
             dict
         """
 
-        self.logger.entry('info', 'Getting list of Conformity subscriptions...')
+        self.logger.entry('debug', 'Getting list of Conformity subscriptions...')
         account_endpoint = f'{self.base_url}/accounts/'
 
         resp = requests.get(account_endpoint, headers=self.headers)
@@ -200,18 +200,19 @@ class Conformity:
 
         for entry in list_of_subscriptions['data']:
             aws_id = entry['attributes'].get('awsaccount-id')
+            self.logger.entry('debug', f'Checking if {aws_id} matches {aws_account_id}')
 
             if not aws_id:
                 continue
 
             if aws_id == aws_account_id:
-                self.logger.entry('debug', f'It does exist:\n{pformat(entry)}')
+                self.logger.entry('info', f'It does exist')
+                self.logger.entry('debug', {pformat(entry)})
 
                 return entry
 
-            self.logger.entry('debug', f'AWS account ID {aws_account_id} does not have a Conformity subscription')
-
-            return dict()
+        self.logger.entry('info', f'AWS account ID {aws_account_id} does not have a Conformity subscription')
+        return dict()
 
     def list_users(self):
         """Description:
@@ -238,7 +239,7 @@ class Conformity:
         Returns:
             dict
         """
-        self.logger.entry('info', 'Getting list of Conformity users...')
+        self.logger.entry('debug', 'Getting list of Conformity users...')
         users_endpoint = f'{self.base_url}/users/'
 
         resp = requests.get(users_endpoint, headers=self.headers)
