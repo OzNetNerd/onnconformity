@@ -70,7 +70,7 @@ class Conformity:
 
         """
         self.logger.entry('info', f'Deleting subscription ID {conformity_id}...')
-        account_endpoint = f'/accounts/{conformity_id}'
+        account_endpoint = f'{self.base_url}/accounts/{conformity_id}'
         resp = requests.delete(account_endpoint, headers=self.headers)
         resp_json = json.loads(resp.text)
         self._check_error(resp_json)
@@ -200,7 +200,6 @@ class Conformity:
 
         for entry in list_of_subscriptions['data']:
             aws_id = entry['attributes'].get('awsaccount-id')
-            self.logger.entry('debug', f'Checking if {aws_id} matches {aws_account_id}')
 
             if not aws_id:
                 continue

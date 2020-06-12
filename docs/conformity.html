@@ -96,7 +96,7 @@ class Conformity:
 
         &#34;&#34;&#34;
         self.logger.entry(&#39;info&#39;, f&#39;Deleting subscription ID {conformity_id}...&#39;)
-        account_endpoint = f&#39;/accounts/{conformity_id}&#39;
+        account_endpoint = f&#39;{self.base_url}/accounts/{conformity_id}&#39;
         resp = requests.delete(account_endpoint, headers=self.headers)
         resp_json = json.loads(resp.text)
         self._check_error(resp_json)
@@ -139,7 +139,7 @@ class Conformity:
             dict
         &#34;&#34;&#34;
 
-        self.logger.entry(&#39;info&#39;, &#39;Getting list of Conformity subscriptions...&#39;)
+        self.logger.entry(&#39;debug&#39;, &#39;Getting list of Conformity subscriptions...&#39;)
         account_endpoint = f&#39;{self.base_url}/accounts/&#39;
 
         resp = requests.get(account_endpoint, headers=self.headers)
@@ -231,13 +231,13 @@ class Conformity:
                 continue
 
             if aws_id == aws_account_id:
-                self.logger.entry(&#39;debug&#39;, f&#39;It does exist:\n{pformat(entry)}&#39;)
+                self.logger.entry(&#39;info&#39;, f&#39;It does exist&#39;)
+                self.logger.entry(&#39;debug&#39;, {pformat(entry)})
 
                 return entry
 
-            self.logger.entry(&#39;debug&#39;, f&#39;AWS account ID {aws_account_id} does not have a Conformity subscription&#39;)
-
-            return dict()
+        self.logger.entry(&#39;info&#39;, f&#39;AWS account ID {aws_account_id} does not have a Conformity subscription&#39;)
+        return dict()
 
     def list_users(self):
         &#34;&#34;&#34;Description:
@@ -264,7 +264,7 @@ class Conformity:
         Returns:
             dict
         &#34;&#34;&#34;
-        self.logger.entry(&#39;info&#39;, &#39;Getting list of Conformity users...&#39;)
+        self.logger.entry(&#39;debug&#39;, &#39;Getting list of Conformity users...&#39;)
         users_endpoint = f&#39;{self.base_url}/users/&#39;
 
         resp = requests.get(users_endpoint, headers=self.headers)
@@ -368,6 +368,8 @@ class Conformity:
         if subscription_exists:
             self.logger.entry(&#39;debug&#39;, f&#39;Skipping subscription creation for for AWS account ID {aws_account_id} as it &#39;
                                        f&#39;is not required&#39;)
+
+            return subscription_exists
 
         self.logger.entry(&#39;info&#39;, f&#39;Creating Conformity subscription for AWS account ID {aws_account_id}...&#39;)
 
@@ -543,7 +545,7 @@ conformity = Conformity(logger)
 
         &#34;&#34;&#34;
         self.logger.entry(&#39;info&#39;, f&#39;Deleting subscription ID {conformity_id}...&#39;)
-        account_endpoint = f&#39;/accounts/{conformity_id}&#39;
+        account_endpoint = f&#39;{self.base_url}/accounts/{conformity_id}&#39;
         resp = requests.delete(account_endpoint, headers=self.headers)
         resp_json = json.loads(resp.text)
         self._check_error(resp_json)
@@ -586,7 +588,7 @@ conformity = Conformity(logger)
             dict
         &#34;&#34;&#34;
 
-        self.logger.entry(&#39;info&#39;, &#39;Getting list of Conformity subscriptions...&#39;)
+        self.logger.entry(&#39;debug&#39;, &#39;Getting list of Conformity subscriptions...&#39;)
         account_endpoint = f&#39;{self.base_url}/accounts/&#39;
 
         resp = requests.get(account_endpoint, headers=self.headers)
@@ -678,13 +680,13 @@ conformity = Conformity(logger)
                 continue
 
             if aws_id == aws_account_id:
-                self.logger.entry(&#39;debug&#39;, f&#39;It does exist:\n{pformat(entry)}&#39;)
+                self.logger.entry(&#39;info&#39;, f&#39;It does exist&#39;)
+                self.logger.entry(&#39;debug&#39;, {pformat(entry)})
 
                 return entry
 
-            self.logger.entry(&#39;debug&#39;, f&#39;AWS account ID {aws_account_id} does not have a Conformity subscription&#39;)
-
-            return dict()
+        self.logger.entry(&#39;info&#39;, f&#39;AWS account ID {aws_account_id} does not have a Conformity subscription&#39;)
+        return dict()
 
     def list_users(self):
         &#34;&#34;&#34;Description:
@@ -711,7 +713,7 @@ conformity = Conformity(logger)
         Returns:
             dict
         &#34;&#34;&#34;
-        self.logger.entry(&#39;info&#39;, &#39;Getting list of Conformity users...&#39;)
+        self.logger.entry(&#39;debug&#39;, &#39;Getting list of Conformity users...&#39;)
         users_endpoint = f&#39;{self.base_url}/users/&#39;
 
         resp = requests.get(users_endpoint, headers=self.headers)
@@ -815,6 +817,8 @@ conformity = Conformity(logger)
         if subscription_exists:
             self.logger.entry(&#39;debug&#39;, f&#39;Skipping subscription creation for for AWS account ID {aws_account_id} as it &#39;
                                        f&#39;is not required&#39;)
+
+            return subscription_exists
 
         self.logger.entry(&#39;info&#39;, f&#39;Creating Conformity subscription for AWS account ID {aws_account_id}...&#39;)
 
@@ -997,13 +1001,13 @@ pprint(existing_account)
             continue
 
         if aws_id == aws_account_id:
-            self.logger.entry(&#39;debug&#39;, f&#39;It does exist:\n{pformat(entry)}&#39;)
+            self.logger.entry(&#39;info&#39;, f&#39;It does exist&#39;)
+            self.logger.entry(&#39;debug&#39;, {pformat(entry)})
 
             return entry
 
-        self.logger.entry(&#39;debug&#39;, f&#39;AWS account ID {aws_account_id} does not have a Conformity subscription&#39;)
-
-        return dict()</code></pre>
+    self.logger.entry(&#39;info&#39;, f&#39;AWS account ID {aws_account_id} does not have a Conformity subscription&#39;)
+    return dict()</code></pre>
 </details>
 </dd>
 <dt id="onnconformity.conformity.Conformity.create_subscription"><code class="name flex">
@@ -1107,6 +1111,8 @@ pprint(new_subscription)
         self.logger.entry(&#39;debug&#39;, f&#39;Skipping subscription creation for for AWS account ID {aws_account_id} as it &#39;
                                    f&#39;is not required&#39;)
 
+        return subscription_exists
+
     self.logger.entry(&#39;info&#39;, f&#39;Creating Conformity subscription for AWS account ID {aws_account_id}...&#39;)
 
     account_endpoint = f&#39;{self.base_url}/accounts/&#39;
@@ -1188,7 +1194,7 @@ print(deleted_subscription)
 
     &#34;&#34;&#34;
     self.logger.entry(&#39;info&#39;, f&#39;Deleting subscription ID {conformity_id}...&#39;)
-    account_endpoint = f&#39;/accounts/{conformity_id}&#39;
+    account_endpoint = f&#39;{self.base_url}/accounts/{conformity_id}&#39;
     resp = requests.delete(account_endpoint, headers=self.headers)
     resp_json = json.loads(resp.text)
     self._check_error(resp_json)
@@ -1349,7 +1355,7 @@ pprint(subscriptions)
         dict
     &#34;&#34;&#34;
 
-    self.logger.entry(&#39;info&#39;, &#39;Getting list of Conformity subscriptions...&#39;)
+    self.logger.entry(&#39;debug&#39;, &#39;Getting list of Conformity subscriptions...&#39;)
     account_endpoint = f&#39;{self.base_url}/accounts/&#39;
 
     resp = requests.get(account_endpoint, headers=self.headers)
@@ -1418,7 +1424,7 @@ pprint(users)
     Returns:
         dict
     &#34;&#34;&#34;
-    self.logger.entry(&#39;info&#39;, &#39;Getting list of Conformity users...&#39;)
+    self.logger.entry(&#39;debug&#39;, &#39;Getting list of Conformity users...&#39;)
     users_endpoint = f&#39;{self.base_url}/users/&#39;
 
     resp = requests.get(users_endpoint, headers=self.headers)
